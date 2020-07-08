@@ -37,44 +37,44 @@ func NewCov(size int) (*Cov, error) {
 		return nil, err
 	}
 
-	m := &Cov{
+	c := &Cov{
 		xy: xy,
 		x:  x, y: y,
 		xm: xm, ym: ym,
 	}
-	return m, nil
+	return c, nil
 }
 
 // Update adds a new element to the covariance circular buffer
-func (p *Cov) Update(x, y float64) {
-	p.xy.Update(x, y)
-	p.x.Update(x)
-	p.y.Update(y)
-	p.xm.Update(x)
-	p.ym.Update(y)
+func (c *Cov) Update(x, y float64) {
+	c.xy.Update(x, y)
+	c.x.Update(x)
+	c.y.Update(y)
+	c.xm.Update(x)
+	c.ym.Update(y)
 }
 
 // Reset clears out the values in the circular buffer and reset ptr and tail pointers
-func (p *Cov) Reset() {
-	p.xy.Reset()
-	p.x.Reset()
-	p.y.Reset()
-	p.xm.Reset()
-	p.ym.Reset()
+func (c *Cov) Reset() {
+	c.xy.Reset()
+	c.x.Reset()
+	c.y.Reset()
+	c.xm.Reset()
+	c.ym.Reset()
 }
 
 // Value computes the current covariance value of the circular buffer
-func (p *Cov) Value() float64 {
-	n := float64(p.Len())
+func (c *Cov) Value() float64 {
+	n := float64(c.Len())
 	if n <= 1 {
 		return 0
 	}
-	xm := p.xm.Value()
-	ym := p.ym.Value()
-	return (p.xy.Value() - xm*p.y.Value() - ym*p.x.Value() + n*xm*ym) / (n - 1)
+	xm := c.xm.Value()
+	ym := c.ym.Value()
+	return (c.xy.Value() - xm*c.y.Value() - ym*c.x.Value() + n*xm*ym) / (n - 1)
 }
 
 // Len returns the number of current elements stored in the circular buffer
-func (p *Cov) Len() int {
-	return p.xy.Len()
+func (c *Cov) Len() int {
+	return c.xy.Len()
 }

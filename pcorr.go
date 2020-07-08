@@ -41,12 +41,12 @@ func NewPCorr(size int) (*PCorr, error) {
 		return nil, err
 	}
 
-	m := &PCorr{
+	p := &PCorr{
 		xy: xy,
 		xx: xx, yy: yy,
 		xm: xm, ym: ym,
 	}
-	return m, nil
+	return p, nil
 }
 
 // Update adds a new element to the pearson correlation circular buffer

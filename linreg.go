@@ -32,41 +32,41 @@ func NewLinReg(size int) (*LinReg, error) {
 		return nil, err
 	}
 
-	m := &LinReg{
+	l := &LinReg{
 		xstd: xstd,
 		xm:   xm, ym: ym, c: c,
 	}
-	return m, nil
+	return l, nil
 }
 
 // Update adds a new element to the linear regression circular buffer
-func (p *LinReg) Update(x, y float64) {
-	p.xstd.Update(x)
-	p.xm.Update(x)
-	p.ym.Update(y)
-	p.c.Update(x, y)
+func (l *LinReg) Update(x, y float64) {
+	l.xstd.Update(x)
+	l.xm.Update(x)
+	l.ym.Update(y)
+	l.c.Update(x, y)
 }
 
 // Reset clears out the values in the circular buffer and reset ptr and tail pointers
-func (p *LinReg) Reset() {
-	p.xstd.Reset()
-	p.xm.Reset()
-	p.ym.Reset()
-	p.c.Reset()
+func (l *LinReg) Reset() {
+	l.xstd.Reset()
+	l.xm.Reset()
+	l.ym.Reset()
+	l.c.Reset()
 }
 
 // Value computes the current linear regression value of the circular buffer
-func (p *LinReg) Value() (float64, float64) {
-	xstd := p.xstd.Value()
+func (l *LinReg) Value() (float64, float64) {
+	xstd := l.xstd.Value()
 	if xstd == 0 {
 		return 0, 0
 	}
-	beta := p.c.Value() / (xstd * xstd)
-	alpha := p.ym.Value() - beta*p.xm.Value()
+	beta := l.c.Value() / (xstd * xstd)
+	alpha := l.ym.Value() - beta*l.xm.Value()
 	return alpha, beta
 }
 
 // Len returns the number of current elements stored in the circular buffer
-func (p *LinReg) Len() int {
-	return p.xstd.Len()
+func (l *LinReg) Len() int {
+	return l.xstd.Len()
 }

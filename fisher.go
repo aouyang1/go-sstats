@@ -19,27 +19,27 @@ func NewFisher(size int) (*Fisher, error) {
 		return nil, err
 	}
 
-	m := &Fisher{zs: zs}
-	return m, nil
+	f := &Fisher{zs: zs}
+	return f, nil
 }
 
 // Update adds a new element to the fisher transform circular buffer
-func (p *Fisher) Update(x float64) {
-	p.zs.Update(x)
+func (f *Fisher) Update(x float64) {
+	f.zs.Update(x)
 }
 
 // Reset clears out the values in the circular buffer and reset ptr and tail pointers
-func (p *Fisher) Reset() {
-	p.zs.Reset()
+func (f *Fisher) Reset() {
+	f.zs.Reset()
 }
 
 // Value computes the current fisher transform value of the circular buffer
-func (p *Fisher) Value() float64 {
-	zs := p.zs.Value()
+func (f *Fisher) Value() float64 {
+	zs := f.zs.Value()
 	return 0.5 * math.Log((1+zs)/(1-zs))
 }
 
 // Len returns the number of current elements stored in the circular buffer
-func (p *Fisher) Len() int {
-	return p.zs.Len()
+func (f *Fisher) Len() int {
+	return f.zs.Len()
 }

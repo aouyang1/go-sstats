@@ -14,39 +14,39 @@ func NewSum(size int) (*Sum, error) {
 	if size < 1 {
 		return nil, errorInvalidSize
 	}
-	m := &Sum{buffer: make([]float64, size)}
-	return m, nil
+	s := &Sum{buffer: make([]float64, size)}
+	return s, nil
 }
 
 // Update adds a new element to the sum circular buffer
-func (m *Sum) Update(x float64) {
-	m.sum += x - m.buffer[m.ptr]
-	m.buffer[m.ptr] = x
-	m.ptr = (m.ptr + 1) % len(m.buffer)
-	if !m.full && m.ptr == 0 {
-		m.full = true
+func (s *Sum) Update(x float64) {
+	s.sum += x - s.buffer[s.ptr]
+	s.buffer[s.ptr] = x
+	s.ptr = (s.ptr + 1) % len(s.buffer)
+	if !s.full && s.ptr == 0 {
+		s.full = true
 	}
 }
 
 // Reset clears out the values in the circular buffer and reset ptr and tail pointers
-func (m *Sum) Reset() {
-	for i := 0; i < len(m.buffer); i++ {
-		m.buffer[i] = 0
+func (s *Sum) Reset() {
+	for i := 0; i < len(s.buffer); i++ {
+		s.buffer[i] = 0
 	}
-	m.ptr = 0
-	m.full = false
-	m.sum = 0
+	s.ptr = 0
+	s.full = false
+	s.sum = 0
 }
 
 // Value computes the current sum value of the circular buffer
-func (m *Sum) Value() float64 {
-	return m.sum
+func (s *Sum) Value() float64 {
+	return s.sum
 }
 
 // Len returns the number of current elements stored in the circular buffer
-func (m *Sum) Len() int {
-	if m.full {
-		return len(m.buffer)
+func (s *Sum) Len() int {
+	if s.full {
+		return len(s.buffer)
 	}
-	return m.ptr
+	return s.ptr
 }
