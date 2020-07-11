@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-// Fisher implements the Statistic interface for streaming fisher transform
+// Fisher computes the streaming fisher transform
 type Fisher struct {
 	zs *ZScore
 }

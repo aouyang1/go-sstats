@@ -1,10 +1,9 @@
 package sstats
 
-// LinReg implements the Statistic interface for streaming linear regression
+// LinReg computes the streaming linear regression
 type LinReg struct {
-	xstd   *StdDev
-	xm, ym *Mean
-	c      *Cov
+	xstd *StdDev
+	c    *Cov
 }
 
 // NewLinReg creates a new linear regression statistic with a given circular buffer size
@@ -17,16 +16,6 @@ func NewLinReg(size int) (*LinReg, error) {
 		return nil, err
 	}
 
-	xm, err := NewMean(size)
-	if err != nil {
-		return nil, err
-	}
-
-	ym, err := NewMean(size)
-	if err != nil {
-		return nil, err
-	}
-
 	c, err := NewCov(size)
 	if err != nil {
 		return nil, err
@@ -34,7 +23,7 @@ func NewLinReg(size int) (*LinReg, error) {
 
 	l := &LinReg{
 		xstd: xstd,
-		xm:   xm, ym: ym, c: c,
+		c:    c,
 	}
 	return l, nil
 }
@@ -42,16 +31,12 @@ func NewLinReg(size int) (*LinReg, error) {
 // Update adds a new element to the linear regression circular buffer
 func (l *LinReg) Update(x, y float64) {
 	l.xstd.Update(x)
-	l.xm.Update(x)
-	l.ym.Update(y)
 	l.c.Update(x, y)
 }
 
 // Reset clears out the values in the circular buffer and reset ptr and tail pointers
 func (l *LinReg) Reset() {
 	l.xstd.Reset()
-	l.xm.Reset()
-	l.ym.Reset()
 	l.c.Reset()
 }
 
@@ -62,7 +47,7 @@ func (l *LinReg) Value() (float64, float64) {
 		return 0, 0
 	}
 	beta := l.c.Value() / (xstd * xstd)
-	alpha := l.ym.Value() - beta*l.xm.Value()
+	alpha := l.c.YMean() - beta*l.xstd.Mean()
 	return alpha, beta
 }
 

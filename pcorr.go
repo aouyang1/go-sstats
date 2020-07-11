@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-// PCorr implements the Statistic interface for streaming pearson correlation, (Σx*y - n*x̄*ȳ)/(sqrt(Σ(x^2-n*x̄))*sqrt(Σ(y^2-n*ȳ)))
+// PCorr computes the streaming pearson correlation, (Σx*y - n*x̄*ȳ)/(sqrt(Σ(x^2-n*x̄))*sqrt(Σ(y^2-n*ȳ)))
 type PCorr struct {
 	xy     *SumProd
 	xx, yy *SumSq

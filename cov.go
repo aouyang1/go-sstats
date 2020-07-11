@@ -1,9 +1,8 @@
 package sstats
 
-// Cov implements the Statistic interface for streaming covariance
+// Cov computes the streaming covariance of an input of two random variables
 type Cov struct {
 	xy     *SumProd
-	x, y   *Sum
 	xm, ym *Mean
 }
 
@@ -13,16 +12,6 @@ func NewCov(size int) (*Cov, error) {
 		return nil, errorInvalidSize
 	}
 	xy, err := NewSumProd(size)
-	if err != nil {
-		return nil, err
-	}
-
-	x, err := NewSum(size)
-	if err != nil {
-		return nil, err
-	}
-
-	y, err := NewSum(size)
 	if err != nil {
 		return nil, err
 	}
@@ -39,8 +28,8 @@ func NewCov(size int) (*Cov, error) {
 
 	c := &Cov{
 		xy: xy,
-		x:  x, y: y,
-		xm: xm, ym: ym,
+		xm: xm,
+		ym: ym,
 	}
 	return c, nil
 }
@@ -48,8 +37,6 @@ func NewCov(size int) (*Cov, error) {
 // Update adds a new element to the covariance circular buffer
 func (c *Cov) Update(x, y float64) {
 	c.xy.Update(x, y)
-	c.x.Update(x)
-	c.y.Update(y)
 	c.xm.Update(x)
 	c.ym.Update(y)
 }
@@ -57,8 +44,6 @@ func (c *Cov) Update(x, y float64) {
 // Reset clears out the values in the circular buffer and reset ptr and tail pointers
 func (c *Cov) Reset() {
 	c.xy.Reset()
-	c.x.Reset()
-	c.y.Reset()
 	c.xm.Reset()
 	c.ym.Reset()
 }
@@ -71,10 +56,18 @@ func (c *Cov) Value() float64 {
 	}
 	xm := c.xm.Value()
 	ym := c.ym.Value()
-	return (c.xy.Value() - xm*c.y.Value() - ym*c.x.Value() + n*xm*ym) / (n - 1)
+	return (c.xy.Value() - xm*c.ym.Sum() - ym*c.xm.Sum() + n*xm*ym) / (n - 1)
 }
 
 // Len returns the number of current elements stored in the circular buffer
 func (c *Cov) Len() int {
 	return c.xy.Len()
+}
+
+func (c *Cov) YMean() float64 {
+	return c.ym.Value()
+}
+
+func (c *Cov) XMean() float64 {
+	return c.xm.Value()
 }

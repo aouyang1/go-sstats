@@ -1,6 +1,6 @@
 package sstats
 
-// SumProd implements the Statistic interface for streaming sum product, Σx*y
+// SumProd computes the streaming sum product, Σx*y
 type SumProd struct {
 	buffer []float64
 	ptr    int

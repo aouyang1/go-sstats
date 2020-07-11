@@ -1,6 +1,6 @@
 package sstats
 
-// Mean implements the Statistic interface for streaming mean, 1/n*Σx
+// Mean computes the streaming mean, 1/n*Σx
 type Mean struct {
 	s *Sum
 }
@@ -37,4 +37,9 @@ func (m *Mean) Value() float64 {
 // Len returns the number of current elements stored in the circular buffer
 func (m *Mean) Len() int {
 	return m.s.Len()
+}
+
+// Sum returns the current sum of the buffer used by mean
+func (m *Mean) Sum() float64 {
+	return m.s.Value()
 }

@@ -5,13 +5,13 @@ import (
 	"testing"
 )
 
-func TestStdDevUpdate(t *testing.T) {
-	sp, err := NewStdDev(5)
+func TestFisherUpdate(t *testing.T) {
+	sp, err := NewFisher(5)
 	if err != nil {
 		t.Fatal(err)
 	}
 	valx := []float64{1, 2, 3, 2, 1, 2, 3, 2, 1}
-	expected := []float64{0, 0.707, 1, 0.816, 0.837, 0.707, 0.837, 0.707, 0.837}
+	expected := []float64{0, 0.881, math.Inf(1), 0, -1.899, 0, 1.899, 0, -1.899}
 	for i, v := range valx {
 		sp.Update(v)
 		val := sp.Value()
@@ -22,10 +22,10 @@ func TestStdDevUpdate(t *testing.T) {
 	}
 }
 
-func BenchmarkStdDevUpdate(b *testing.B) {
+func BenchmarkFisherUpdate(b *testing.B) {
 	window := 1000
 	numValues := 100000
-	sp, err := NewStdDev(window)
+	sp, err := NewFisher(window)
 	if err != nil {
 		b.Fatal(err)
 	}
